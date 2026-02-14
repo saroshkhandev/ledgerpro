@@ -1,0 +1,15 @@
+{
+  "name": "ledger-crud-react-node",
+  "version": "3.1.0",
+  "description": "Ledger CRUD app with MVC backend and Vite React frontend",
+  "main": "backend/src/app.js",
+  "scripts": {
+    "start": "node backend/src/app.js",
+    "dev:api": "node backend/src/app.js",
+    "dev:web": "npm --prefix frontend run dev",
+    "build:web": "npm --prefix frontend run build"
+  },
+  "dependencies": {
+    "mongodb": "^6.18.0"
+  }
+}
