@@ -1215,6 +1215,25 @@ select:-webkit-autofill {
     width: 100% !important;
   }
 
+  .tx-table .ant-table-content table {
+    min-width: 520px !important;
+  }
+
+  .tx-table .row-actions {
+    gap: 4px;
+  }
+
+  .tx-table .row-actions .ant-btn-sm:not(.ant-btn-icon-only) {
+    padding-inline: 8px !important;
+    min-width: 56px;
+  }
+
+  .tx-table .row-actions .ant-btn-icon-only {
+    width: 28px;
+    min-width: 28px;
+    height: 28px;
+  }
+
   .stats-grid,
   .stats-grid--three {
     grid-template-columns: repeat(2, minmax(0, 1fr));

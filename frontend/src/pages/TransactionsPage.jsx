@@ -147,7 +147,7 @@ export default function TransactionsPage({
     { title: "Due Date", dataIndex: "dueDate", width: 130, render: (v) => (v ? fmtDate(v) : "-"), responsive: ["lg"] },
     {
       title: "Actions",
-      width: 180,
+      width: 124,
       render: (_, r) => (
         <RowActions
           quickActions={[
@@ -214,7 +214,7 @@ export default function TransactionsPage({
         }
       >
         <Table
-          className="page-table"
+          className="page-table tx-table"
           rowKey="id"
           columns={columns}
           dataSource={quickFiltered}
