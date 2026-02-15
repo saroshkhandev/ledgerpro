@@ -243,6 +243,13 @@ body {
   overflow: hidden !important;
 }
 
+.sidebar-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(8, 16, 24, 0.34);
+  z-index: 1100;
+}
+
 .app-sider .ant-layout-sider-children {
   height: 100%;
   display: flex;

@@ -86,6 +86,14 @@ export default function AppLayout({ me, onLogout, logoutLoading, uiPrefs, onUpda
     return () => window.removeEventListener("keydown", onKeyDown);
   }, []);
 
+  useEffect(() => {
+    if (!isMobileViewport) {
+      setSettingsOpen(false);
+      return;
+    }
+    if (settingsOpen) setMobileCollapsed(true);
+  }, [isMobileViewport, settingsOpen]);
+
   return (
     <Layout className="app-layout modern-shell">
       <Sider
@@ -134,7 +142,7 @@ export default function AppLayout({ me, onLogout, logoutLoading, uiPrefs, onUpda
                 type="text"
                 icon={<SettingOutlined />}
                 aria-label="Open settings"
-                onClick={() => setSettingsOpen(true)}
+                onClick={() => setSettingsOpen((v) => !v)}
               />
             ) : (
               <Popover placement="leftBottom" trigger="click" content={settingsContent}>
@@ -152,6 +160,13 @@ export default function AppLayout({ me, onLogout, logoutLoading, uiPrefs, onUpda
           </div>
         </div>
       </Sider>
+      {isMobileViewport && !mobileCollapsed ? (
+        <div
+          className="sidebar-backdrop"
+          onClick={() => setMobileCollapsed(true)}
+          aria-hidden="true"
+        />
+      ) : null}
 
       <Layout className="app-main">
         <Header className="app-header">
@@ -187,6 +202,7 @@ export default function AppLayout({ me, onLogout, logoutLoading, uiPrefs, onUpda
         footer={null}
         width={320}
         centered
+        zIndex={1400}
       >
         {settingsContent}
       </Modal>
