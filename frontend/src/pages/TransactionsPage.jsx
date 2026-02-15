@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button, Card, Col, DatePicker, Divider, Drawer, Form, Grid, Input, InputNumber, Modal, Row, Select, Space, Switch, Table, Tag, Timeline, Typography } from "antd";
-import { FilterOutlined } from "@ant-design/icons";
+import { CloseCircleOutlined, FilterOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import RowActions from "../components/RowActions";
 
@@ -220,7 +220,8 @@ export default function TransactionsPage({
                   { label: "Returns", value: "returns" },
                 ]}
               />
-              <Select style={{ width: 220 }} allowClear placeholder="Filter by entity" value={entityFilter || undefined} onChange={(v) => setEntityFilter(v || "")} options={entities.map((e) => ({ label: e.name, value: String(e.id) }))} />
+              <Select style={{ width: 220 }} placeholder="Filter by entity" value={entityFilter || undefined} onChange={(v) => setEntityFilter(v || "")} options={entities.map((e) => ({ label: e.name, value: String(e.id) }))} />
+              <Button icon={<CloseCircleOutlined />} onClick={() => setEntityFilter("")}>Clear</Button>
               <Button type="primary" onClick={openAdd}>New Entry</Button>
             </Space>
           )
@@ -259,7 +260,6 @@ export default function TransactionsPage({
           />
           <Select
             style={{ width: "100%" }}
-            allowClear
             placeholder="Filter by entity"
             value={entityFilter || undefined}
             onChange={(v) => setEntityFilter(v || "")}
