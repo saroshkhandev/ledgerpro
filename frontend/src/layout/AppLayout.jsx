@@ -16,7 +16,7 @@ const navItems = [
   { key: "/reminders", label: "Reminders" },
 ];
 
-export default function AppLayout({ me, onLogout, uiPrefs, onUpdateUiPrefs, globalQuery, onGlobalQueryChange, children }) {
+export default function AppLayout({ me, onLogout, logoutLoading, uiPrefs, onUpdateUiPrefs, globalQuery, onGlobalQueryChange, children }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [mobileCollapsed, setMobileCollapsed] = useState(false);
@@ -133,7 +133,7 @@ export default function AppLayout({ me, onLogout, uiPrefs, onUpdateUiPrefs, glob
             </Popover>
           </div>
           <div className="footer-actions">
-            <Button block onClick={onLogout}>Logout</Button>
+            <Button block onClick={onLogout} loading={logoutLoading}>Logout</Button>
           </div>
         </div>
       </Sider>

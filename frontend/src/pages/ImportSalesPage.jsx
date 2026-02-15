@@ -3,7 +3,7 @@ import { Alert, Button, Card, Space, Typography, Upload } from "antd";
 
 const { Dragger } = Upload;
 
-export default function ImportSalesPage({ onImport }) {
+export default function ImportSalesPage({ onImport, importLoading }) {
   const [csvText, setCsvText] = useState("");
   const [result, setResult] = useState(null);
 
@@ -37,7 +37,7 @@ export default function ImportSalesPage({ onImport }) {
             <p className="ant-upload-hint">Bulk import sales records into the ledger</p>
           </Dragger>
 
-          <Button type="primary" onClick={runImport} disabled={!csvText.trim()}>
+          <Button type="primary" onClick={runImport} loading={importLoading} disabled={!csvText.trim() || importLoading}>
             Run Import
           </Button>
 

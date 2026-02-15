@@ -26,6 +26,8 @@ export default function ReportsPage({
   onExportBackup,
   onImportBackup,
   audits,
+  exportLoading,
+  importLoading,
   money,
 }) {
   const agingRows = useMemo(() => {
@@ -148,7 +150,7 @@ export default function ReportsPage({
           <Button onClick={onExportEntities}>Entities CSV</Button>
           <Button onClick={onExportTransactions}>Transactions CSV</Button>
           <Button onClick={onExportBills}>Invoices CSV</Button>
-          <Button onClick={onExportBackup}>Backup JSON</Button>
+          <Button onClick={onExportBackup} loading={exportLoading}>Backup JSON</Button>
           <Upload
             accept=".json,application/json"
             showUploadList={false}
@@ -158,7 +160,7 @@ export default function ReportsPage({
               return false;
             }}
           >
-            <Button icon={<UploadOutlined />}>Restore Backup</Button>
+            <Button icon={<UploadOutlined />} loading={importLoading}>Restore Backup</Button>
           </Upload>
         </Space>
       </Card>

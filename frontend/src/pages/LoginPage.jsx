@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Card, Typography, Segmented, Input, Button, Alert, Space } from "antd";
 import { CheckCircleOutlined, FileDoneOutlined, LockOutlined, MobileOutlined } from "@ant-design/icons";
 
-export default function LoginPage({ authMsg, onLogin, onRegister }) {
+export default function LoginPage({ authMsg, onLogin, onRegister, authBusy }) {
   const [mode, setMode] = useState("login");
   const [loginForm, setLoginForm] = useState({ email: "", password: "" });
   const [registerForm, setRegisterForm] = useState({ name: "", email: "", password: "", address: "", photoUrl: "" });
@@ -87,7 +87,7 @@ export default function LoginPage({ authMsg, onLogin, onRegister }) {
                   value={loginForm.password}
                   onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
                 />
-                <Button type="primary" size="large" block onClick={() => onLogin(loginForm)}>Login</Button>
+                <Button type="primary" size="large" block loading={!!authBusy?.login} onClick={() => onLogin(loginForm)}>Login</Button>
               </Space>
             ) : (
               <Space key="register-form" direction="vertical" size={10} style={{ width: "100%" }}>
@@ -128,7 +128,7 @@ export default function LoginPage({ authMsg, onLogin, onRegister }) {
                   value={registerForm.photoUrl}
                   onChange={(e) => setRegisterForm({ ...registerForm, photoUrl: e.target.value })}
                 />
-                <Button type="primary" size="large" block onClick={() => onRegister(registerForm)}>Create Account</Button>
+                <Button type="primary" size="large" block loading={!!authBusy?.register} onClick={() => onRegister(registerForm)}>Create Account</Button>
               </Space>
             )}
 

@@ -12,6 +12,7 @@ export default function EntitiesPage({
   fillEntity,
   deleteEntity,
   getEntityPassbook,
+  saveLoading,
   money,
   fmtDate,
 }) {
@@ -31,8 +32,8 @@ export default function EntitiesPage({
   };
 
   const onSave = async () => {
-    await saveEntity();
-    setOpen(false);
+    const ok = await saveEntity();
+    if (ok) setOpen(false);
   };
 
   const openPassbook = async (record) => {
@@ -93,7 +94,7 @@ export default function EntitiesPage({
         onClose={() => setOpen(false)}
         width={860}
         destroyOnClose
-        extra={<Button type="primary" onClick={onSave}>Save Entity</Button>}
+        extra={<Button type="primary" loading={saveLoading} onClick={onSave}>Save Entity</Button>}
       >
         <Form layout="vertical" className="drawer-form">
           <Form.Item label="Entity Name" required extra="Business or party name used in ledger entries.">

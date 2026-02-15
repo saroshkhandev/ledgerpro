@@ -9,7 +9,7 @@ const currencies = [
   { label: "SAR - Saudi Riyal", value: "SAR" },
 ];
 
-export default function ProfilePage({ profileForm, setProfileForm, saveProfile }) {
+export default function ProfilePage({ profileForm, setProfileForm, saveProfile, saveLoading }) {
   return (
     <div className="page-stack">
       <Card className="page-card" title="Profile Settings">
@@ -129,7 +129,7 @@ export default function ProfilePage({ profileForm, setProfileForm, saveProfile }
           </Col>
         </Row>
 
-        <Button type="primary" onClick={saveProfile}>Update Profile</Button>
+        <Button type="primary" loading={saveLoading} onClick={saveProfile}>Update Profile</Button>
         </Form>
       </Card>
     </div>

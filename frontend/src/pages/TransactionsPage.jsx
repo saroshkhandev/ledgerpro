@@ -16,6 +16,8 @@ export default function TransactionsPage({
   addPayment,
   deleteTx,
   getProductBatches,
+  saveLoading,
+  paymentLoading,
   money,
   fmtDate,
 }) {
@@ -61,10 +63,12 @@ export default function TransactionsPage({
   };
 
   const onSave = async () => {
-    await saveTx();
-    setOpen(false);
-    setBatchOptions([]);
-    setSelectedExistingBatch("");
+    const ok = await saveTx();
+    if (ok) {
+      setOpen(false);
+      setBatchOptions([]);
+      setSelectedExistingBatch("");
+    }
   };
 
   useEffect(() => {
@@ -220,7 +224,7 @@ export default function TransactionsPage({
         />
       </Card>
 
-      <Drawer className="standard-form-drawer" title={txForm.id ? "Edit Entry" : "New Entry"} open={open} onClose={() => setOpen(false)} width={860} destroyOnClose extra={<Button type="primary" onClick={onSave}>Save Entry</Button>}>
+      <Drawer className="standard-form-drawer" title={txForm.id ? "Edit Entry" : "New Entry"} open={open} onClose={() => setOpen(false)} width={860} destroyOnClose extra={<Button type="primary" loading={saveLoading} onClick={onSave}>Save Entry</Button>}>
         <Form layout="vertical" className="tx-form-wrap drawer-form">
           <Typography.Text className="tx-section-title">Basic Details</Typography.Text>
           <Row gutter={[12, 12]}>
@@ -413,6 +417,7 @@ export default function TransactionsPage({
         onCancel={() => setPayOpen(false)}
         onOk={onConfirmPayment}
         okText="Save Payment"
+        confirmLoading={paymentLoading}
       >
         <Space direction="vertical" style={{ width: "100%" }}>
           <Typography.Text type="secondary">Current Due: {money(payTx?.due || 0)}</Typography.Text>

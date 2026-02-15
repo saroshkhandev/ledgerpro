@@ -97,8 +97,9 @@ function mergeBillTemplateConfig(raw) {
 function ProtectedRoute({ me, authLoading, children }) {
   if (authLoading) {
     return (
-      <div style={{ minHeight: "100vh", display: "grid", placeItems: "center" }}>
+      <div style={{ minHeight: "100vh", display: "grid", placeItems: "center", gap: 12 }}>
         <Spin size="large" />
+        <div style={{ color: "var(--text-soft)", fontWeight: 600 }}>Loading your ledger...</div>
       </div>
     );
   }
@@ -109,6 +110,20 @@ function ProtectedRoute({ me, authLoading, children }) {
 export default function App() {
   const navigate = useNavigate();
   const [apiMsg, contextHolder] = message.useMessage();
+  const [busy, setBusy] = useState({
+    login: false,
+    register: false,
+    logout: false,
+    profile: false,
+    entity: false,
+    product: false,
+    transaction: false,
+    payment: false,
+    bill: false,
+    importCsv: false,
+    backupExport: false,
+    backupImport: false,
+  });
 
   const [me, setMe] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
@@ -285,13 +300,18 @@ export default function App() {
   );
 
   const onRegister = async (payload) => {
+    setBusy((prev) => ({ ...prev, register: true }));
     try {
       await api.post("/auth/register", payload);
       setAuthMsg("");
       await boot();
       navigate("/dashboard");
+      return true;
     } catch (err) {
       setAuthMsg(err?.response?.data?.error || "Registration failed");
+      return false;
+    } finally {
+      setBusy((prev) => ({ ...prev, register: false }));
     }
   };
 
@@ -304,29 +324,44 @@ export default function App() {
   };
 
   const onLogin = async (payload) => {
+    setBusy((prev) => ({ ...prev, login: true }));
     try {
       await api.post("/auth/login", payload);
       setAuthMsg("");
       await boot();
       navigate("/dashboard");
+      return true;
     } catch (err) {
       setAuthMsg(err?.response?.data?.error || "Login failed");
+      return false;
+    } finally {
+      setBusy((prev) => ({ ...prev, login: false }));
     }
   };
 
   const onLogout = async () => {
-    await api.post("/auth/logout");
-    setMe(null);
-    navigate("/login");
+    setBusy((prev) => ({ ...prev, logout: true }));
+    try {
+      await api.post("/auth/logout");
+      setMe(null);
+      navigate("/login");
+    } finally {
+      setBusy((prev) => ({ ...prev, logout: false }));
+    }
   };
 
   const saveProfile = async () => {
+    setBusy((prev) => ({ ...prev, profile: true }));
     try {
       const res = await api.put("/auth/profile", profileForm);
       setMe(res.data.item);
       apiMsg.success("Profile updated");
+      return true;
     } catch (err) {
       apiMsg.error(err?.response?.data?.error || "Failed to update profile");
+      return false;
+    } finally {
+      setBusy((prev) => ({ ...prev, profile: false }));
     }
   };
 
@@ -342,18 +377,26 @@ export default function App() {
     });
 
   const saveEntity = async () => {
+    setBusy((prev) => ({ ...prev, entity: true }));
     try {
       const payload = { ...entityForm };
       delete payload.id;
-      if (!payload.name.trim()) return apiMsg.error("Entity name is required");
+      if (!payload.name.trim()) {
+        apiMsg.error("Entity name is required");
+        return false;
+      }
       if (entityForm.id) await api.put(`/entities/${entityForm.id}`, payload);
       else await api.post("/entities", payload);
       await addAudit(entityForm.id ? "update" : "create", "entity", `${payload.name} ${entityForm.id ? "updated" : "created"}`);
       setEntityForm({ id: null, name: "", category: "Medical Store", gstin: "", phone: "", address: "", openingBalance: 0 });
       await loadAll();
       apiMsg.success("Entity saved");
+      return true;
     } catch (err) {
       apiMsg.error(err?.response?.data?.error || "Failed to save entity");
+      return false;
+    } finally {
+      setBusy((prev) => ({ ...prev, entity: false }));
     }
   };
 
@@ -383,18 +426,26 @@ export default function App() {
     });
 
   const saveProduct = async () => {
+    setBusy((prev) => ({ ...prev, product: true }));
     try {
       const payload = { ...productForm };
       delete payload.id;
-      if (!payload.name?.trim()) return apiMsg.error("Product name is required");
+      if (!payload.name?.trim()) {
+        apiMsg.error("Product name is required");
+        return false;
+      }
       if (productForm.id) await api.put(`/products/${productForm.id}`, payload);
       else await api.post("/products", payload);
       await addAudit(productForm.id ? "update" : "create", "product", `${payload.name} ${productForm.id ? "updated" : "created"}`);
       setProductForm({ id: null, name: "", sku: "", unit: "pcs", batchingEnabled: false, initialBatchNo: "", initialMfgDate: "", initialExpDate: "", salePrice: 0, purchasePrice: 0, gstRate: 18, stockQty: 0, reorderLevel: 5, description: "" });
       await loadAll();
       apiMsg.success("Product saved");
+      return true;
     } catch (err) {
       apiMsg.error(err?.response?.data?.error || "Failed to save product");
+      return false;
+    } finally {
+      setBusy((prev) => ({ ...prev, product: false }));
     }
   };
 
@@ -427,6 +478,7 @@ export default function App() {
     });
 
   const saveTx = async () => {
+    setBusy((prev) => ({ ...prev, transaction: true }));
     try {
       const payload = {
         date: txForm.date,
@@ -446,22 +498,34 @@ export default function App() {
         mfgDate: txForm.batchingEnabled ? String(txForm.mfgDate || "").trim() : "",
         expDate: txForm.batchingEnabled ? String(txForm.expDate || "").trim() : "",
       };
-      if (!payload.entityId || !payload.item || !payload.date) return apiMsg.error("Required fields missing");
+      if (!payload.entityId || !payload.item || !payload.date) {
+        apiMsg.error("Required fields missing");
+        return false;
+      }
       if (txForm.id) await api.put(`/transactions/${txForm.id}`, payload);
       else await api.post("/transactions", payload);
       await addAudit(txForm.id ? "update" : "create", "transaction", `${payload.item} ${txForm.id ? "updated" : "created"}`, { type: payload.type });
       setTxForm(initialTxForm());
       await loadAll();
       apiMsg.success("Transaction saved");
+      return true;
     } catch (err) {
       apiMsg.error(err?.response?.data?.error || "Failed to save transaction");
+      return false;
+    } finally {
+      setBusy((prev) => ({ ...prev, transaction: false }));
     }
   };
 
   const importSalesCsv = async (csvText) => {
-    const res = await api.post("/transactions/import-csv", { csvText });
-    await loadAll();
-    return res.data;
+    setBusy((prev) => ({ ...prev, importCsv: true }));
+    try {
+      const res = await api.post("/transactions/import-csv", { csvText });
+      await loadAll();
+      return res.data;
+    } finally {
+      setBusy((prev) => ({ ...prev, importCsv: false }));
+    }
   };
 
   const addPayment = async (tx, payload = null) => {
@@ -473,13 +537,18 @@ export default function App() {
       if (Number.isNaN(addPaid) || addPaid <= 0) return;
       requestPayload = { addPaid };
     }
+    setBusy((prev) => ({ ...prev, payment: true }));
     try {
       await api.patch(`/transactions/${tx.id}/payment`, requestPayload);
       await addAudit("payment", "transaction", `Payment recorded for ${tx.item}`, { id: tx.id, addPaid: requestPayload.addPaid });
       await loadAll();
       apiMsg.success("Payment recorded");
+      return true;
     } catch (err) {
       apiMsg.error(err?.response?.data?.error || "Failed to update payment");
+      return false;
+    } finally {
+      setBusy((prev) => ({ ...prev, payment: false }));
     }
   };
 
@@ -496,16 +565,25 @@ export default function App() {
   };
 
   const saveBill = async () => {
-    if (!billForm.saleIds.length) return apiMsg.error("Select one or more sales");
-    await api.post("/bills", {
-      date: billForm.date,
-      entityId: String(billForm.entityId || ""),
-      prefix: billForm.prefix.toUpperCase(),
-      saleIds: billForm.saleIds.map((x) => String(x)),
-    });
-    await addAudit("create", "invoice", "Invoice generated", { entityId: billForm.entityId, sales: billForm.saleIds.length });
-    setBillForm({ date: today(), entityId: "", prefix: "INV", saleIds: [], template: "classic" });
-    await loadAll();
+    setBusy((prev) => ({ ...prev, bill: true }));
+    try {
+      if (!billForm.saleIds.length) {
+        apiMsg.error("Select one or more sales");
+        return false;
+      }
+      await api.post("/bills", {
+        date: billForm.date,
+        entityId: String(billForm.entityId || ""),
+        prefix: billForm.prefix.toUpperCase(),
+        saleIds: billForm.saleIds.map((x) => String(x)),
+      });
+      await addAudit("create", "invoice", "Invoice generated", { entityId: billForm.entityId, sales: billForm.saleIds.length });
+      setBillForm({ date: today(), entityId: "", prefix: "INV", saleIds: [], template: "classic" });
+      await loadAll();
+      return true;
+    } finally {
+      setBusy((prev) => ({ ...prev, bill: false }));
+    }
   };
 
   const deleteBill = async (id) => {
@@ -516,6 +594,7 @@ export default function App() {
   };
 
   const exportBackup = async () => {
+    setBusy((prev) => ({ ...prev, backupExport: true }));
     try {
       const res = await api.get("/backup");
       const file = `ledger-backup-${today()}.json`;
@@ -528,10 +607,13 @@ export default function App() {
       apiMsg.success("Backup exported");
     } catch (err) {
       apiMsg.error(err?.response?.data?.error || "Backup export failed");
+    } finally {
+      setBusy((prev) => ({ ...prev, backupExport: false }));
     }
   };
 
   const importBackup = async (jsonText) => {
+    setBusy((prev) => ({ ...prev, backupImport: true }));
     try {
       const parsed = JSON.parse(jsonText);
       await api.post("/backup/restore", parsed);
@@ -540,6 +622,8 @@ export default function App() {
       apiMsg.success("Backup restored");
     } catch (err) {
       apiMsg.error(err?.response?.data?.error || err.message || "Backup restore failed");
+    } finally {
+      setBusy((prev) => ({ ...prev, backupImport: false }));
     }
   };
 
@@ -774,23 +858,23 @@ export default function App() {
       <AntApp>
         {contextHolder}
         <Routes>
-        <Route path="/login" element={<LoginPage authMsg={authMsg} onLogin={onLogin} onRegister={onRegister} />} />
+        <Route path="/login" element={<LoginPage authMsg={authMsg} onLogin={onLogin} onRegister={onRegister} authBusy={busy} />} />
 
         <Route
           path="/*"
           element={
             <ProtectedRoute me={me} authLoading={authLoading}>
-              <AppLayout me={me} onLogout={onLogout} uiPrefs={uiPrefs} onUpdateUiPrefs={setUiPrefs} globalQuery={globalQuery} onGlobalQueryChange={setGlobalQuery}>
+              <AppLayout me={me} onLogout={onLogout} logoutLoading={busy.logout} uiPrefs={uiPrefs} onUpdateUiPrefs={setUiPrefs} globalQuery={globalQuery} onGlobalQueryChange={setGlobalQuery}>
                 <Routes>
                   <Route path="/dashboard" element={<DashboardPage summary={summary} transactions={filteredTransactions} money={moneyFmt} fmtDate={fmtDate} />} />
-                  <Route path="/entities" element={<EntitiesPage entityForm={entityForm} setEntityForm={setEntityForm} entities={filteredEntities} saveEntity={saveEntity} fillEntity={fillEntity} deleteEntity={deleteEntity} getEntityPassbook={getEntityPassbook} money={moneyFmt} fmtDate={fmtDate} />} />
-                  <Route path="/products" element={<ProductsPage productForm={productForm} setProductForm={setProductForm} products={filteredProducts} saveProduct={saveProduct} editProduct={editProduct} deleteProduct={deleteProduct} getProductStockLedger={getProductStockLedger} money={moneyFmt} fmtDate={fmtDate} />} />
-                  <Route path="/transactions" element={<TransactionsPage txForm={txForm} setTxForm={setTxForm} entities={entities} products={products} entityFilter={entityFilter} setEntityFilter={setEntityFilter} filteredTransactions={filteredTransactions} saveTx={saveTx} editTx={editTx} addPayment={addPayment} deleteTx={deleteTx} getProductBatches={getProductBatches} money={moneyFmt} fmtDate={fmtDate} />} />
-                  <Route path="/import-sales" element={<ImportSalesPage onImport={importSalesCsv} />} />
-                  <Route path="/bills" element={<BillsPage billForm={billForm} setBillForm={setBillForm} entities={entities} salesForBill={salesForBill} bills={filteredBills} saveBill={saveBill} printBill={printBill} deleteBill={deleteBill} billTemplateConfig={billTemplateConfig} setBillTemplateConfig={setBillTemplateConfig} defaultBillTemplateConfig={defaultBillTemplateConfig} money={moneyFmt} fmtDate={fmtDate} />} />
-                  <Route path="/reports" element={<ReportsPage summary={summary} transactions={transactions} audits={audits} onExportEntities={onExportEntities} onExportTransactions={onExportTransactions} onExportBills={onExportBills} onExportBackup={exportBackup} onImportBackup={importBackup} money={moneyFmt} />} />
+                  <Route path="/entities" element={<EntitiesPage entityForm={entityForm} setEntityForm={setEntityForm} entities={filteredEntities} saveEntity={saveEntity} fillEntity={fillEntity} deleteEntity={deleteEntity} getEntityPassbook={getEntityPassbook} saveLoading={busy.entity} money={moneyFmt} fmtDate={fmtDate} />} />
+                  <Route path="/products" element={<ProductsPage productForm={productForm} setProductForm={setProductForm} products={filteredProducts} saveProduct={saveProduct} editProduct={editProduct} deleteProduct={deleteProduct} getProductStockLedger={getProductStockLedger} saveLoading={busy.product} money={moneyFmt} fmtDate={fmtDate} />} />
+                  <Route path="/transactions" element={<TransactionsPage txForm={txForm} setTxForm={setTxForm} entities={entities} products={products} entityFilter={entityFilter} setEntityFilter={setEntityFilter} filteredTransactions={filteredTransactions} saveTx={saveTx} editTx={editTx} addPayment={addPayment} deleteTx={deleteTx} getProductBatches={getProductBatches} saveLoading={busy.transaction} paymentLoading={busy.payment} money={moneyFmt} fmtDate={fmtDate} />} />
+                  <Route path="/import-sales" element={<ImportSalesPage onImport={importSalesCsv} importLoading={busy.importCsv} />} />
+                  <Route path="/bills" element={<BillsPage billForm={billForm} setBillForm={setBillForm} entities={entities} salesForBill={salesForBill} bills={filteredBills} saveBill={saveBill} printBill={printBill} deleteBill={deleteBill} billTemplateConfig={billTemplateConfig} setBillTemplateConfig={setBillTemplateConfig} defaultBillTemplateConfig={defaultBillTemplateConfig} saveLoading={busy.bill} money={moneyFmt} fmtDate={fmtDate} />} />
+                  <Route path="/reports" element={<ReportsPage summary={summary} transactions={transactions} audits={audits} onExportEntities={onExportEntities} onExportTransactions={onExportTransactions} onExportBills={onExportBills} onExportBackup={exportBackup} onImportBackup={importBackup} exportLoading={busy.backupExport} importLoading={busy.backupImport} money={moneyFmt} />} />
                   <Route path="/reminders" element={<RemindersPage reminders={filteredReminders} addPayment={addPayment} money={moneyFmt} fmtDate={fmtDate} />} />
-                  <Route path="/profile" element={<ProfilePage profileForm={profileForm} setProfileForm={setProfileForm} saveProfile={saveProfile} />} />
+                  <Route path="/profile" element={<ProfilePage profileForm={profileForm} setProfileForm={setProfileForm} saveProfile={saveProfile} saveLoading={busy.profile} />} />
                   <Route path="*" element={<Navigate to="/dashboard" replace />} />
                 </Routes>
               </AppLayout>

@@ -10,6 +10,7 @@ export default function ProductsPage({
   editProduct,
   deleteProduct,
   getProductStockLedger,
+  saveLoading,
   money,
   fmtDate,
 }) {
@@ -29,8 +30,8 @@ export default function ProductsPage({
   };
 
   const onSave = async () => {
-    await saveProduct();
-    setOpen(false);
+    const ok = await saveProduct();
+    if (ok) setOpen(false);
   };
 
   const openLedger = async (record) => {
@@ -121,7 +122,7 @@ export default function ProductsPage({
         onClose={() => setOpen(false)}
         width={860}
         destroyOnClose
-        extra={<Button type="primary" onClick={onSave}>Save Product</Button>}
+        extra={<Button type="primary" loading={saveLoading} onClick={onSave}>Save Product</Button>}
       >
         <Form layout="vertical" className="drawer-form">
           <Form.Item label="Product Name" required extra="Shown in transactions and invoices.">

@@ -60,6 +60,7 @@ export default function BillsPage({
   billTemplateConfig,
   setBillTemplateConfig,
   defaultBillTemplateConfig,
+  saveLoading,
   money,
   fmtDate,
 }) {
@@ -86,8 +87,8 @@ export default function BillsPage({
   };
 
   const onSave = async () => {
-    await saveBill();
-    setOpen(false);
+    const ok = await saveBill();
+    if (ok) setOpen(false);
   };
 
   const columns = [
@@ -237,7 +238,7 @@ export default function BillsPage({
         ))}
       </Drawer>
 
-      <Drawer className="standard-form-drawer" title="Create GST Invoice" open={open} onClose={() => setOpen(false)} width={860} destroyOnClose extra={<Button type="primary" onClick={onSave}>Generate Invoice</Button>}>
+      <Drawer className="standard-form-drawer" title="Create GST Invoice" open={open} onClose={() => setOpen(false)} width={860} destroyOnClose extra={<Button type="primary" loading={saveLoading} onClick={onSave}>Generate Invoice</Button>}>
         <Form layout="vertical" className="drawer-form">
           <Row gutter={12}>
             <Col xs={24} md={8}>
