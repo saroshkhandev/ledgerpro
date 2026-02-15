@@ -1228,7 +1228,7 @@ select:-webkit-autofill {
   .bills-toolbar-mobile {
     width: 100%;
     display: grid !important;
-    grid-template-columns: 42px 1fr;
+    grid-template-columns: 44px minmax(0, 1fr);
     gap: 8px;
     align-items: center;
   }
@@ -1242,6 +1242,20 @@ select:-webkit-autofill {
   .tx-toolbar-mobile .ant-btn,
   .bills-toolbar-mobile .ant-btn {
     width: 100% !important;
+  }
+
+  .tx-toolbar-mobile .ant-btn-icon-only,
+  .bills-toolbar-mobile .ant-btn-icon-only {
+    width: 44px !important;
+    min-width: 44px !important;
+    height: 40px !important;
+    padding: 0 !important;
+  }
+
+  .tx-toolbar-mobile .ant-btn-primary,
+  .bills-toolbar-mobile .ant-btn-primary {
+    min-height: 40px !important;
+    padding-inline: 12px !important;
   }
 
   .ant-input,
