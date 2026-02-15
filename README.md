@@ -65,3 +65,37 @@ You can override safely using env vars:
 4. Open `http://localhost:4000`
 
 Backend serves built frontend from `frontend/dist`.
+
+## Mobile App Wrapper (Capacitor)
+
+The project now includes Capacitor wrappers under:
+- `/Users/saroshkhan/work/projectA/frontend/android`
+- `/Users/saroshkhan/work/projectA/frontend/ios`
+
+### One-time setup
+
+1. `cd /Users/saroshkhan/work/projectA/frontend`
+2. `npm install`
+3. Configure API URL for mobile builds:
+   - copy `/Users/saroshkhan/work/projectA/frontend/.env.example` to `frontend/.env`
+   - set `VITE_API_BASE_URL` to your deployed backend API, for example:
+     - `VITE_API_BASE_URL=https://ledgerpro-39ln.onrender.com/api`
+
+### Build and sync mobile assets
+
+From repo root:
+1. `npm run mobile:build`
+
+This builds the web app and syncs it to Android/iOS wrappers.
+
+### Open native projects
+
+From repo root:
+1. Android Studio: `npm run mobile:android`
+2. Xcode: `npm run mobile:ios`
+
+### Optional run commands
+
+From repo root:
+1. `npm run mobile:run:android`
+2. `npm run mobile:run:ios`
