@@ -28,8 +28,9 @@ export default function ImportSalesPage({ onImport, importLoading }) {
       <Card className="page-card" title="Import Transactions (CSV)">
         <Space direction="vertical" style={{ width: "100%" }} size={12}>
           <Typography.Text type="secondary">
-            Required headers example: `date,entityId,item,qty,unitAmount,gstRate,dueDate,paidAmount,note`.
-            Optional headers: `productId,batchingEnabled,batchNo,mfgDate,expDate`.
+            Required headers: <code>date,entityId,item,qty,unitAmount,gstRate,dueDate,paidAmount,note</code>
+            <br />
+            Optional headers: <code>productId,batchingEnabled,batchNo,mfgDate,expDate</code>
           </Typography.Text>
 
           <Dragger {...props}>

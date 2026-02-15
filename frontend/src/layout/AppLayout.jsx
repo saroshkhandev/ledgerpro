@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Layout, Menu, Typography, Button, Avatar, Space, Switch, Divider, Popover, Input } from "antd";
+import { Layout, Menu, Typography, Button, Avatar, Space, Switch, Divider, Popover, Input, Modal } from "antd";
 import { MenuOutlined, SettingOutlined, UserOutlined } from "@ant-design/icons";
 import { useNavigate, useLocation } from "react-router-dom";
 
@@ -21,6 +21,7 @@ export default function AppLayout({ me, onLogout, logoutLoading, uiPrefs, onUpda
   const location = useLocation();
   const [mobileCollapsed, setMobileCollapsed] = useState(false);
   const [isMobileViewport, setIsMobileViewport] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const searchRef = useRef(null);
 
   const selected = navItems.find((x) => location.pathname.startsWith(x.key))?.key || "/dashboard";
@@ -60,6 +61,7 @@ export default function AppLayout({ me, onLogout, logoutLoading, uiPrefs, onUpda
       <Button
         icon={<UserOutlined />}
         onClick={() => {
+          setSettingsOpen(false);
           navigate("/profile");
         }}
       >
@@ -126,14 +128,24 @@ export default function AppLayout({ me, onLogout, logoutLoading, uiPrefs, onUpda
                 <div className="me-email">{me?.email}</div>
               </div>
             </Space>
-            <Popover placement="leftBottom" trigger="click" content={settingsContent}>
+            {isMobileViewport ? (
               <Button
                 className="settings-icon-btn"
                 type="text"
                 icon={<SettingOutlined />}
                 aria-label="Open settings"
+                onClick={() => setSettingsOpen(true)}
               />
-            </Popover>
+            ) : (
+              <Popover placement="leftBottom" trigger="click" content={settingsContent}>
+                <Button
+                  className="settings-icon-btn"
+                  type="text"
+                  icon={<SettingOutlined />}
+                  aria-label="Open settings"
+                />
+              </Popover>
+            )}
           </div>
           <div className="footer-actions">
             <Button block onClick={onLogout} loading={logoutLoading}>Logout</Button>
@@ -168,6 +180,16 @@ export default function AppLayout({ me, onLogout, logoutLoading, uiPrefs, onUpda
         </Header>
         <Content className="app-content">{children}</Content>
       </Layout>
+      <Modal
+        title="Settings"
+        open={isMobileViewport && settingsOpen}
+        onCancel={() => setSettingsOpen(false)}
+        footer={null}
+        width={320}
+        centered
+      >
+        {settingsContent}
+      </Modal>
     </Layout>
   );
 }

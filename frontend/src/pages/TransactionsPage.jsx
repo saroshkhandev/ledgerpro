@@ -139,12 +139,12 @@ export default function TransactionsPage({
         return <Tag color={item.color}>{item.label}</Tag>;
       },
     },
-    { title: "Item", dataIndex: "item", width: 220 },
-    { title: "Batch", dataIndex: "batchNo", width: 120, render: (v) => v || "-" },
-    { title: "Gross", dataIndex: "gross", width: 120, render: (v) => money(v) },
-    { title: "Paid", dataIndex: "paidAmount", width: 120, render: (v) => money(v) },
-    { title: "Due", dataIndex: "due", width: 120, render: (v) => money(v) },
-    { title: "Due Date", dataIndex: "dueDate", width: 130, render: (v) => (v ? fmtDate(v) : "-") },
+    { title: "Item", dataIndex: "item", width: 220, responsive: ["md"] },
+    { title: "Batch", dataIndex: "batchNo", width: 120, render: (v) => v || "-", responsive: ["lg"] },
+    { title: "Gross", dataIndex: "gross", width: 120, render: (v) => money(v), responsive: ["md"] },
+    { title: "Paid", dataIndex: "paidAmount", width: 120, render: (v) => money(v), responsive: ["lg"] },
+    { title: "Due", dataIndex: "due", width: 120, render: (v) => money(v), responsive: ["md"] },
+    { title: "Due Date", dataIndex: "dueDate", width: 130, render: (v) => (v ? fmtDate(v) : "-"), responsive: ["lg"] },
     {
       title: "Actions",
       width: 180,

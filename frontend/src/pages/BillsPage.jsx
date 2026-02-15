@@ -95,8 +95,8 @@ export default function BillsPage({
     { title: "Invoice No", dataIndex: "billNo" },
     { title: "Date", dataIndex: "date", render: (v) => fmtDate(v) },
     { title: "Entity", dataIndex: "entityName" },
-    { title: "Subtotal", dataIndex: "subtotal", render: (v) => money(v) },
-    { title: "GST", dataIndex: "gstTotal", render: (v) => money(v) },
+    { title: "Subtotal", dataIndex: "subtotal", render: (v) => money(v), responsive: ["md"] },
+    { title: "GST", dataIndex: "gstTotal", render: (v) => money(v), responsive: ["lg"] },
     { title: "Total", dataIndex: "total", render: (v) => money(v) },
     {
       title: "Actions",

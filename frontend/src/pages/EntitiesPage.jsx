@@ -50,8 +50,8 @@ export default function EntitiesPage({
   const columns = [
     { title: "Name", dataIndex: "name" },
     { title: "Category", dataIndex: "category" },
-    { title: "GSTIN", dataIndex: "gstin", render: (v) => v || "-" },
-    { title: "Opening", dataIndex: "openingBalance", render: (v) => money(v) },
+    { title: "GSTIN", dataIndex: "gstin", render: (v) => v || "-", responsive: ["md"] },
+    { title: "Opening", dataIndex: "openingBalance", render: (v) => money(v), responsive: ["lg"] },
     { title: "Balance", dataIndex: "balance", render: (v) => money(v) },
     {
       title: "Actions",
