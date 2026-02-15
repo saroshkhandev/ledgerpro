@@ -86,7 +86,7 @@ export default function AppLayout({ me, onLogout, uiPrefs, onUpdateUiPrefs, glob
   return (
     <Layout className="app-layout modern-shell">
       <Sider
-        breakpoint="lg"
+        breakpoint="md"
         collapsedWidth="0"
         width={250}
         collapsed={mobileCollapsed}
