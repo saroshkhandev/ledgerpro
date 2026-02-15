@@ -201,9 +201,7 @@ export default function TransactionsPage({
         extra={
           isMobile ? (
             <Space className="page-toolbar tx-toolbar-mobile" wrap>
-              <Button icon={<FilterOutlined />} onClick={() => setFilterOpen(true)}>
-                Filters
-              </Button>
+              <Button icon={<FilterOutlined />} aria-label="Open filters" onClick={() => setFilterOpen(true)} />
               <Button type="primary" onClick={openAdd}>New Entry</Button>
             </Space>
           ) : (
