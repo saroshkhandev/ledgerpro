@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { Button, Card, Checkbox, Col, Divider, Drawer, Form, Input, Row, Select, Space, Table, Typography, message } from "antd";
+import { Button, Card, Checkbox, Col, Divider, Drawer, Form, Grid, Input, Row, Select, Space, Table, Typography, message, Dropdown } from "antd";
+import { SettingOutlined } from "@ant-design/icons";
 import RowActions from "../components/RowActions";
 
 const optionSections = [
@@ -70,6 +71,8 @@ export default function BillsPage({
   const [builderOpen, setBuilderOpen] = useState(false);
   const [presetName, setPresetName] = useState("");
   const [presetId, setPresetId] = useState("default");
+  const screens = Grid.useBreakpoint();
+  const isMobile = !screens.sm;
   const [presets, setPresets] = useState(() => {
     try {
       const raw = localStorage.getItem("ledger_bill_template_presets");
@@ -169,10 +172,57 @@ export default function BillsPage({
     msgApi.success("Preset deleted");
   };
 
+  const templateOptions = [
+    { label: "Template: Classic", value: "classic" },
+    { label: "Template: Modern", value: "modern" },
+    { label: "Template: Minimal", value: "minimal" },
+    { label: "Template: GST Formal", value: "gst_formal" },
+  ];
+
+  const billMobileMenu = {
+    items: [
+      ...templateOptions.map((opt) => ({
+        key: `template:${opt.value}`,
+        label: opt.label,
+      })),
+      { type: "divider" },
+      { key: "customize", label: "Customize Template" },
+    ],
+    onClick: ({ key }) => {
+      if (key === "customize") {
+        setBuilderOpen(true);
+        return;
+      }
+      if (String(key).startsWith("template:")) {
+        const next = String(key).split(":")[1];
+        setExportTemplate(next);
+      }
+    },
+  };
+
   return (
     <div className="page-stack">
       {contextHolder}
-      <Card className="page-card page-card--table" title="Invoices" extra={<Space className="page-toolbar bills-toolbar" wrap><Select value={exportTemplate} onChange={setExportTemplate} style={{ width: 190 }} options={[{ label: "Template: Classic", value: "classic" }, { label: "Template: Modern", value: "modern" }, { label: "Template: Minimal", value: "minimal" }, { label: "Template: GST Formal", value: "gst_formal" }]} /><Button onClick={() => setBuilderOpen(true)}>Customize Template</Button><Button type="primary" onClick={openCreate}>New Invoice</Button></Space>}>
+      <Card
+        className="page-card page-card--table"
+        title={isMobile ? null : "Invoices"}
+        extra={
+          isMobile ? (
+            <Space className="page-toolbar bills-toolbar-mobile">
+              <Dropdown menu={billMobileMenu} trigger={["click"]} placement="bottomRight">
+                <Button icon={<SettingOutlined />} />
+              </Dropdown>
+              <Button type="primary" onClick={openCreate}>New Invoice</Button>
+            </Space>
+          ) : (
+            <Space className="page-toolbar bills-toolbar" wrap>
+              <Select value={exportTemplate} onChange={setExportTemplate} style={{ width: 190 }} options={templateOptions} />
+              <Button onClick={() => setBuilderOpen(true)}>Customize Template</Button>
+              <Button type="primary" onClick={openCreate}>New Invoice</Button>
+            </Space>
+          )
+        }
+      >
         <Table className="page-table" rowKey="id" columns={columns} dataSource={bills} pagination={{ pageSize: 8 }} />
       </Card>
 

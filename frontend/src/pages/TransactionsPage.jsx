@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Button, Card, Col, DatePicker, Divider, Drawer, Form, Input, InputNumber, Modal, Row, Select, Space, Switch, Table, Tag, Timeline, Typography } from "antd";
+import { Button, Card, Col, DatePicker, Divider, Drawer, Form, Grid, Input, InputNumber, Modal, Row, Select, Space, Switch, Table, Tag, Timeline, Typography } from "antd";
+import { FilterOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import RowActions from "../components/RowActions";
 
@@ -28,9 +29,12 @@ export default function TransactionsPage({
   const [payForm, setPayForm] = useState({ addPaid: 0, date: dayjs(), note: "" });
   const [timelineOpen, setTimelineOpen] = useState(false);
   const [timelineTx, setTimelineTx] = useState(null);
+  const [filterOpen, setFilterOpen] = useState(false);
   const [batchOptions, setBatchOptions] = useState([]);
   const [batchLoading, setBatchLoading] = useState(false);
   const [selectedExistingBatch, setSelectedExistingBatch] = useState("");
+  const screens = Grid.useBreakpoint();
+  const isMobile = !screens.sm;
 
   const openAdd = () => {
     setTxForm({
@@ -193,24 +197,33 @@ export default function TransactionsPage({
     <div className="page-stack">
       <Card
         className="page-card page-card--table"
-        title="Transactions"
+        title={isMobile ? null : "Transactions"}
         extra={
-          <Space className="page-toolbar tx-toolbar" wrap>
-            <Select
-              style={{ width: 180 }}
-              value={quickView}
-              onChange={setQuickView}
-              options={[
-                { label: "Quick View: All", value: "all" },
-                { label: "Overdue", value: "overdue" },
-                { label: "Due Today", value: "dueToday" },
-                { label: "High Value", value: "highValue" },
-                { label: "Returns", value: "returns" },
-              ]}
-            />
-            <Select style={{ width: 220 }} allowClear placeholder="Filter by entity" value={entityFilter || undefined} onChange={(v) => setEntityFilter(v || "")} options={entities.map((e) => ({ label: e.name, value: String(e.id) }))} />
-            <Button type="primary" onClick={openAdd}>New Entry</Button>
-          </Space>
+          isMobile ? (
+            <Space className="page-toolbar tx-toolbar-mobile" wrap>
+              <Button icon={<FilterOutlined />} onClick={() => setFilterOpen(true)}>
+                Filters
+              </Button>
+              <Button type="primary" onClick={openAdd}>New Entry</Button>
+            </Space>
+          ) : (
+            <Space className="page-toolbar tx-toolbar" wrap>
+              <Select
+                style={{ width: 180 }}
+                value={quickView}
+                onChange={setQuickView}
+                options={[
+                  { label: "Quick View: All", value: "all" },
+                  { label: "Overdue", value: "overdue" },
+                  { label: "Due Today", value: "dueToday" },
+                  { label: "High Value", value: "highValue" },
+                  { label: "Returns", value: "returns" },
+                ]}
+              />
+              <Select style={{ width: 220 }} allowClear placeholder="Filter by entity" value={entityFilter || undefined} onChange={(v) => setEntityFilter(v || "")} options={entities.map((e) => ({ label: e.name, value: String(e.id) }))} />
+              <Button type="primary" onClick={openAdd}>New Entry</Button>
+            </Space>
+          )
         }
       >
         <Table
@@ -223,6 +236,38 @@ export default function TransactionsPage({
           size="middle"
         />
       </Card>
+
+      <Modal
+        title="Transaction Filters"
+        open={filterOpen}
+        onCancel={() => setFilterOpen(false)}
+        onOk={() => setFilterOpen(false)}
+        okText="Apply"
+      >
+        <Space direction="vertical" style={{ width: "100%" }} size={12}>
+          <Select
+            style={{ width: "100%" }}
+            value={quickView}
+            onChange={setQuickView}
+            options={[
+              { label: "Quick View: All", value: "all" },
+              { label: "Overdue", value: "overdue" },
+              { label: "Due Today", value: "dueToday" },
+              { label: "High Value", value: "highValue" },
+              { label: "Returns", value: "returns" },
+            ]}
+          />
+          <Select
+            style={{ width: "100%" }}
+            allowClear
+            placeholder="Filter by entity"
+            value={entityFilter || undefined}
+            onChange={(v) => setEntityFilter(v || "")}
+            options={entities.map((e) => ({ label: e.name, value: String(e.id) }))}
+          />
+          <Button onClick={() => setEntityFilter("")}>Clear Filter</Button>
+        </Space>
+      </Modal>
 
       <Drawer className="standard-form-drawer" title={txForm.id ? "Edit Entry" : "New Entry"} open={open} onClose={() => setOpen(false)} width={860} destroyOnClose extra={<Button type="primary" loading={saveLoading} onClick={onSave}>Save Entry</Button>}>
         <Form layout="vertical" className="tx-form-wrap drawer-form">

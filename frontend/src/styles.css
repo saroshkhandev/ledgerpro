@@ -1172,6 +1172,15 @@ select:-webkit-autofill {
 }
 
 @media (max-width: 576px) {
+  .page-card .ant-card-head {
+    min-height: 0 !important;
+    padding: 8px 12px !important;
+  }
+
+  .page-card .ant-card-head:empty {
+    display: none !important;
+  }
+
   .app-header {
     flex-wrap: nowrap;
     min-height: 60px !important;
@@ -1212,6 +1221,26 @@ select:-webkit-autofill {
   .tx-toolbar .ant-btn,
   .bills-toolbar .ant-select,
   .bills-toolbar .ant-btn {
+    width: 100% !important;
+  }
+
+  .tx-toolbar-mobile,
+  .bills-toolbar-mobile {
+    width: 100%;
+    display: grid !important;
+    grid-template-columns: 42px 1fr;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .tx-toolbar-mobile .ant-space-item,
+  .bills-toolbar-mobile .ant-space-item {
+    margin-inline-end: 0 !important;
+    width: 100%;
+  }
+
+  .tx-toolbar-mobile .ant-btn,
+  .bills-toolbar-mobile .ant-btn {
     width: 100% !important;
   }
 
