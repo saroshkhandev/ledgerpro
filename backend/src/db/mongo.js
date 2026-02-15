@@ -6,7 +6,10 @@ let db;
 
 async function connectMongo() {
   if (db) return db;
-  const forceIpv4 = process.env.MONGODB_FORCE_IPV4 !== "false";
+  const runningOnRender = Boolean(process.env.RENDER || process.env.RENDER_SERVICE_ID);
+  const forceIpv4 = process.env.MONGODB_FORCE_IPV4
+    ? process.env.MONGODB_FORCE_IPV4 === "true"
+    : !runningOnRender;
   const options = {
     serverSelectionTimeoutMS: Number(process.env.MONGODB_SERVER_SELECTION_TIMEOUT_MS || 12000),
     connectTimeoutMS: Number(process.env.MONGODB_CONNECT_TIMEOUT_MS || 12000),
