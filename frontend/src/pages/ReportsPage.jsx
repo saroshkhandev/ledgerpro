@@ -1,4 +1,4 @@
-import { Button, Card, Col, Row, Space, Table, Tag, Upload } from "antd";
+import { Button, Card, Space, Table, Tag, Upload } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { useMemo } from "react";
 import StatCard from "../components/StatCard";
@@ -104,18 +104,18 @@ export default function ReportsPage({
 
   return (
     <div className="page-stack">
-      <Row gutter={[12, 12]}>
-        <Col xs={24} sm={8}><StatCard title="Overdue Reminders" value={summary?.overdueCount ?? 0} /></Col>
-        <Col xs={24} sm={8}><StatCard title="Partial Payments" value={transactions.filter((t) => t.paidAmount > 0 && t.due > 0).length} /></Col>
-        <Col xs={24} sm={8}><StatCard title="Fully Paid" value={transactions.filter((t) => t.due <= 0).length} /></Col>
-      </Row>
+      <div className="stats-grid stats-grid--three">
+        <div><StatCard title="Overdue Reminders" value={summary?.overdueCount ?? 0} /></div>
+        <div><StatCard title="Partial Payments" value={transactions.filter((t) => t.paidAmount > 0 && t.due > 0).length} /></div>
+        <div><StatCard title="Fully Paid" value={transactions.filter((t) => t.due <= 0).length} /></div>
+      </div>
 
-      <Row gutter={[12, 12]}>
-        <Col xs={24} sm={12} lg={6}><StatCard title="Total Outstanding" value={money(totals.totalDue)} /></Col>
-        <Col xs={24} sm={12} lg={6}><StatCard title="0-30 Days" value={money(totals.b0_30)} /></Col>
-        <Col xs={24} sm={12} lg={6}><StatCard title="31-60 Days" value={money(totals.b31_60)} /></Col>
-        <Col xs={24} sm={12} lg={6}><StatCard title="90+ Days" value={money(totals.b90)} /></Col>
-      </Row>
+      <div className="stats-grid">
+        <div><StatCard title="Total Outstanding" value={money(totals.totalDue)} /></div>
+        <div><StatCard title="0-30 Days" value={money(totals.b0_30)} /></div>
+        <div><StatCard title="31-60 Days" value={money(totals.b31_60)} /></div>
+        <div><StatCard title="90+ Days" value={money(totals.b90)} /></div>
+      </div>
 
       <Card
         className="page-card page-card--table"

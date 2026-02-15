@@ -1,4 +1,4 @@
-import { Card, Col, Row, Table, Tag } from "antd";
+import { Card, Table, Tag } from "antd";
 import StatCard from "../components/StatCard";
 
 export default function DashboardPage({ summary, transactions, money, fmtDate }) {
@@ -35,16 +35,16 @@ export default function DashboardPage({ summary, transactions, money, fmtDate })
 
   return (
     <div className="page-stack">
-      <Row gutter={[12, 12]}>
+      <div className="stats-grid">
         {cards.map(([title, value]) => (
-          <Col xs={24} sm={12} xl={6} key={title}>
+          <div key={title}>
             <StatCard title={title} value={value} />
-          </Col>
+          </div>
         ))}
-      </Row>
+      </div>
 
       <Card className="page-card page-card--table" title="Recent Activity">
-        <Table className="page-table" rowKey="id" columns={columns} dataSource={transactions.slice(0, 10)} pagination={false} />
+        <Table className="page-table" rowKey="id" columns={columns} dataSource={transactions.slice(0, 6)} pagination={false} />
       </Card>
     </div>
   );

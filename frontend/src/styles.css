@@ -500,6 +500,16 @@ body {
   gap: 16px;
 }
 
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.stats-grid--three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 .page-card {
   border-radius: 12px;
   overflow: hidden;
@@ -1068,6 +1078,9 @@ select:-webkit-autofill {
     flex-wrap: wrap;
     align-items: center;
     row-gap: 8px;
+    height: auto !important;
+    min-height: 64px !important;
+    overflow: visible;
     padding-top: 8px !important;
     padding-bottom: 8px !important;
   }
@@ -1120,6 +1133,11 @@ select:-webkit-autofill {
     font-size: 25px !important;
   }
 
+  .stats-grid,
+  .stats-grid--three {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .ant-table-wrapper .ant-table-content {
     overflow-x: auto;
   }
@@ -1135,11 +1153,44 @@ select:-webkit-autofill {
 }
 
 @media (max-width: 576px) {
+  .app-header {
+    flex-wrap: nowrap;
+    min-height: 60px !important;
+    padding: 8px 12px !important;
+  }
+
+  .header-right {
+    display: none !important;
+  }
+
   .page-title {
     font-size: 20px;
   }
 
   .ant-card-body {
     padding: 12px !important;
+  }
+
+  .app-content {
+    padding: 8px;
+  }
+
+  .stats-grid,
+  .stats-grid--three {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .stat-card .ant-card-body {
+    padding: 12px !important;
+  }
+
+  .stat-label {
+    font-size: 12px;
+  }
+
+  .stat-value {
+    margin-top: 6px !important;
+    font-size: 20px !important;
   }
 }
