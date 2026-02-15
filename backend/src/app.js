@@ -64,6 +64,10 @@ const server = http.createServer(async (req, res) => {
     const url = new URL(req.url, `http://${req.headers.host}`);
     const { pathname } = url;
 
+    if (pathname === "/api/health") {
+      return sendJson(res, 200, { ok: true, service: "ledgerpro" });
+    }
+
     const route = findRoute(req.method, pathname);
     if (route) {
       if (route.auth) {

@@ -5,7 +5,7 @@ services:
     plan: free
     buildCommand: npm install && npm --prefix frontend install && npm run build:web
     startCommand: npm start
-    healthCheckPath: /api/summary
+    healthCheckPath: /api/health
     envVars:
       - key: NODE_VERSION
         value: 20
