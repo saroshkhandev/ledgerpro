@@ -20,6 +20,7 @@ export default function AppLayout({ me, onLogout, logoutLoading, uiPrefs, onUpda
   const navigate = useNavigate();
   const location = useLocation();
   const [mobileCollapsed, setMobileCollapsed] = useState(false);
+  const [isMobileViewport, setIsMobileViewport] = useState(false);
   const searchRef = useRef(null);
 
   const selected = navItems.find((x) => location.pathname.startsWith(x.key))?.key || "/dashboard";
@@ -91,6 +92,7 @@ export default function AppLayout({ me, onLogout, logoutLoading, uiPrefs, onUpda
         width={250}
         collapsed={mobileCollapsed}
         onBreakpoint={(broken) => {
+          setIsMobileViewport(broken);
           if (broken) setMobileCollapsed(true);
           else setMobileCollapsed(false);
         }}
@@ -110,6 +112,7 @@ export default function AppLayout({ me, onLogout, logoutLoading, uiPrefs, onUpda
           items={navItems}
           onClick={({ key }) => {
             navigate(key);
+            if (isMobileViewport) setMobileCollapsed(true);
           }}
           style={{ borderInlineEnd: 0, background: "transparent" }}
         />
