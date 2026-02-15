@@ -1194,6 +1194,27 @@ select:-webkit-autofill {
     padding: 8px;
   }
 
+  .tx-toolbar,
+  .bills-toolbar {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    width: 100% !important;
+    gap: 8px !important;
+  }
+
+  .tx-toolbar .ant-space-item,
+  .bills-toolbar .ant-space-item {
+    width: 100% !important;
+    margin-inline-end: 0 !important;
+  }
+
+  .tx-toolbar .ant-select,
+  .tx-toolbar .ant-btn,
+  .bills-toolbar .ant-select,
+  .bills-toolbar .ant-btn {
+    width: 100% !important;
+  }
+
   .stats-grid,
   .stats-grid--three {
     grid-template-columns: repeat(2, minmax(0, 1fr));

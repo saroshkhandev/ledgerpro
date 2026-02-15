@@ -33,7 +33,10 @@ class BillService {
 
     const allTx = await this.models.transactions.listByUser(userId);
     const sales = allTx.filter(
-      (tx) => String(tx.entityId) === entityId && tx.type === "sale" && saleIds.includes(String(tx.id))
+      (tx) =>
+        String(tx.entityId || "") === entityId &&
+        String(tx.type || "").toLowerCase() === "sale" &&
+        saleIds.includes(String(tx.id))
     );
     if (!sales.length) throw new Error("No valid sales selected.");
 

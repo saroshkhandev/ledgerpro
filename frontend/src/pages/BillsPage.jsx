@@ -172,7 +172,7 @@ export default function BillsPage({
   return (
     <div className="page-stack">
       {contextHolder}
-      <Card className="page-card page-card--table" title="Invoices" extra={<Space className="page-toolbar"><Select value={exportTemplate} onChange={setExportTemplate} style={{ width: 190 }} options={[{ label: "Template: Classic", value: "classic" }, { label: "Template: Modern", value: "modern" }, { label: "Template: Minimal", value: "minimal" }, { label: "Template: GST Formal", value: "gst_formal" }]} /><Button onClick={() => setBuilderOpen(true)}>Customize Template</Button><Button type="primary" onClick={openCreate}>New Invoice</Button></Space>}>
+      <Card className="page-card page-card--table" title="Invoices" extra={<Space className="page-toolbar bills-toolbar" wrap><Select value={exportTemplate} onChange={setExportTemplate} style={{ width: 190 }} options={[{ label: "Template: Classic", value: "classic" }, { label: "Template: Modern", value: "modern" }, { label: "Template: Minimal", value: "minimal" }, { label: "Template: GST Formal", value: "gst_formal" }]} /><Button onClick={() => setBuilderOpen(true)}>Customize Template</Button><Button type="primary" onClick={openCreate}>New Invoice</Button></Space>}>
         <Table className="page-table" rowKey="id" columns={columns} dataSource={bills} pagination={{ pageSize: 8 }} />
       </Card>
 

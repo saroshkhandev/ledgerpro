@@ -195,7 +195,7 @@ export default function TransactionsPage({
         className="page-card page-card--table"
         title="Transactions"
         extra={
-          <Space className="page-toolbar">
+          <Space className="page-toolbar tx-toolbar" wrap>
             <Select
               style={{ width: 180 }}
               value={quickView}

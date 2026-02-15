@@ -225,7 +225,12 @@ export default function App() {
 
   const salesForBill = useMemo(() => {
     const entityId = String(billForm.entityId || "");
-    return transactions.filter((t) => t.type === "sale" && String(t.entityId) === entityId);
+    return transactions.filter((t) => {
+      const type = String(t.type || "").toLowerCase();
+      if (type !== "sale") return false;
+      if (!entityId) return true;
+      return String(t.entityId || "") === entityId;
+    });
   }, [transactions, billForm.entityId]);
 
   const antTheme = useMemo(
