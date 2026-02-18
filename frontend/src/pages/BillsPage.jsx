@@ -95,14 +95,16 @@ export default function BillsPage({
   };
 
   const columns = [
-    { title: "Invoice No", dataIndex: "billNo" },
-    { title: "Date", dataIndex: "date", render: (v) => fmtDate(v) },
-    { title: "Entity", dataIndex: "entityName" },
-    { title: "Subtotal", dataIndex: "subtotal", render: (v) => money(v), responsive: ["md"] },
-    { title: "GST", dataIndex: "gstTotal", render: (v) => money(v), responsive: ["lg"] },
-    { title: "Total", dataIndex: "total", render: (v) => money(v) },
+    { title: "Invoice No", dataIndex: "billNo", width: 132, ellipsis: true },
+    { title: "Date", dataIndex: "date", width: 104, render: (v) => fmtDate(v) },
+    { title: "Entity", dataIndex: "entityName", width: 180, ellipsis: true },
+    { title: "Lines", dataIndex: "saleIds", width: 72, render: (v) => Array.isArray(v) ? v.length : 0, responsive: ["md"] },
+    { title: "Subtotal", dataIndex: "subtotal", width: 102, render: (v) => money(v), responsive: ["md"] },
+    { title: "GST", dataIndex: "gstTotal", width: 96, render: (v) => money(v), responsive: ["lg"] },
+    { title: "Total", dataIndex: "total", width: 104, render: (v) => money(v) },
     {
       title: "Actions",
+      width: 98,
       render: (_, r) => (
         <RowActions
           quickActions={[{ key: "download", label: "Download PDF", onClick: () => printBill(r, exportTemplate, activeConfig) }]}
@@ -223,7 +225,15 @@ export default function BillsPage({
           )
         }
       >
-        <Table className="page-table" rowKey="id" columns={columns} dataSource={bills} pagination={{ pageSize: 8 }} />
+        <Table
+          className="page-table"
+          rowKey="id"
+          columns={columns}
+          dataSource={bills}
+          pagination={{ pageSize: 8 }}
+          tableLayout="auto"
+          scroll={{ x: "max-content" }}
+        />
       </Card>
 
       <Drawer

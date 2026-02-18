@@ -1,5 +1,5 @@
 const { sendJson, readBody } = require("../utils/http");
-const { createSession, destroySessionByCookie, getUserIdFromRequest } = require("../middleware/sessionStore");
+const { createSession, destroySessionByRequest, getUserIdFromRequest } = require("../middleware/sessionStore");
 
 function authController(services) {
   return {
@@ -8,7 +8,7 @@ function authController(services) {
         const body = await readBody(req);
         const user = await services.auth.register(body);
         const sid = createSession(user.id);
-        sendJson(res, 201, { ok: true, user }, { "Set-Cookie": `sid=${sid}; HttpOnly; Path=/; SameSite=Lax` });
+        sendJson(res, 201, { ok: true, user, sid }, { "Set-Cookie": `sid=${sid}; HttpOnly; Path=/; SameSite=Lax` });
       } catch (err) {
         sendJson(res, 400, { error: err.message });
       }
@@ -19,14 +19,14 @@ function authController(services) {
         const body = await readBody(req);
         const user = await services.auth.login(body);
         const sid = createSession(user.id);
-        sendJson(res, 200, { ok: true, user }, { "Set-Cookie": `sid=${sid}; HttpOnly; Path=/; SameSite=Lax` });
+        sendJson(res, 200, { ok: true, user, sid }, { "Set-Cookie": `sid=${sid}; HttpOnly; Path=/; SameSite=Lax` });
       } catch (err) {
         sendJson(res, 401, { error: err.message });
       }
     },
 
     logout: (req, res) => {
-      destroySessionByCookie(req.headers.cookie || "");
+      destroySessionByRequest(req);
       sendJson(res, 200, { ok: true }, { "Set-Cookie": "sid=; HttpOnly; Max-Age=0; Path=/; SameSite=Lax" });
     },
 

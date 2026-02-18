@@ -1,11 +1,17 @@
 import { useEffect, useState } from "react";
-import { Card, Typography, Segmented, Input, Button, Alert, Space } from "antd";
+import { Card, Typography, Segmented, Input, Button, Alert, Space, Spin } from "antd";
 import { CheckCircleOutlined, FileDoneOutlined, LockOutlined, MobileOutlined } from "@ant-design/icons";
+import { Capacitor } from "@capacitor/core";
 
 export default function LoginPage({ authMsg, onLogin, onRegister, authBusy }) {
+  const isNative = Capacitor.isNativePlatform();
   const [mode, setMode] = useState("login");
   const [loginForm, setLoginForm] = useState({ email: "", password: "" });
   const [registerForm, setRegisterForm] = useState({ name: "", email: "", password: "", address: "", photoUrl: "" });
+  const authLoading = !!authBusy?.login || !!authBusy?.register;
+  const textSafeInputProps = isNative
+    ? { autoCapitalize: "none", autoCorrect: "off", spellCheck: false }
+    : {};
 
   useEffect(() => {
     if (mode === "register") {
@@ -58,6 +64,7 @@ export default function LoginPage({ authMsg, onLogin, onRegister, authBusy }) {
         </div>
 
         <Card className={`auth-card ${mode === "login" ? "auth-card--login" : "auth-card--register"}`} bordered={false}>
+          <Spin spinning={authLoading} tip="Please wait...">
           <Space direction="vertical" size={16} className="auth-form-stack">
             <div className="auth-form-head">
               <Typography.Title level={2} style={{ marginBottom: 4 }}>Welcome</Typography.Title>
@@ -77,6 +84,8 @@ export default function LoginPage({ authMsg, onLogin, onRegister, authBusy }) {
                   size="large"
                   placeholder="Email"
                   autoComplete="username"
+                  inputMode="email"
+                  {...textSafeInputProps}
                   value={loginForm.email}
                   onChange={(e) => setLoginForm({ ...loginForm, email: e.target.value })}
                 />
@@ -84,6 +93,7 @@ export default function LoginPage({ authMsg, onLogin, onRegister, authBusy }) {
                   size="large"
                   placeholder="Password"
                   autoComplete="current-password"
+                  {...textSafeInputProps}
                   value={loginForm.password}
                   onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
                 />
@@ -104,6 +114,8 @@ export default function LoginPage({ authMsg, onLogin, onRegister, authBusy }) {
                   size="large"
                   placeholder="Email"
                   autoComplete="off"
+                  inputMode="email"
+                  {...textSafeInputProps}
                   value={registerForm.email}
                   onChange={(e) => setRegisterForm({ ...registerForm, email: e.target.value })}
                 />
@@ -111,6 +123,7 @@ export default function LoginPage({ authMsg, onLogin, onRegister, authBusy }) {
                   size="large"
                   placeholder="Password (min 6 chars)"
                   autoComplete="new-password"
+                  {...textSafeInputProps}
                   value={registerForm.password}
                   onChange={(e) => setRegisterForm({ ...registerForm, password: e.target.value })}
                 />
@@ -125,6 +138,8 @@ export default function LoginPage({ authMsg, onLogin, onRegister, authBusy }) {
                   size="large"
                   placeholder="Photo URL (optional)"
                   autoComplete="off"
+                  inputMode="url"
+                  {...textSafeInputProps}
                   value={registerForm.photoUrl}
                   onChange={(e) => setRegisterForm({ ...registerForm, photoUrl: e.target.value })}
                 />
@@ -138,6 +153,7 @@ export default function LoginPage({ authMsg, onLogin, onRegister, authBusy }) {
               <Typography.Text type="secondary"><CheckCircleOutlined /> Works on mobile, tablet and desktop</Typography.Text>
             </Space>
           </Space>
+          </Spin>
         </Card>
       </div>
     </div>

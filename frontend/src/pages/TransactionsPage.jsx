@@ -126,12 +126,24 @@ export default function TransactionsPage({
   const due = Math.max(total - Number(txForm.paidAmount || 0), 0);
 
   const columns = [
-    { title: "Date", dataIndex: "date", width: 120, render: (v) => fmtDate(v) },
-    { title: "Entity", dataIndex: "entityName", width: 190 },
+    { title: "Date", dataIndex: "date", width: 102, render: (v) => fmtDate(v) },
+    {
+      title: "Entity",
+      dataIndex: "entityName",
+      width: 156,
+      ellipsis: true,
+    },
+    {
+      title: "Product",
+      dataIndex: "productName",
+      width: 142,
+      render: (v) => v || "-",
+      ellipsis: true,
+    },
     {
       title: "Type",
       dataIndex: "type",
-      width: 130,
+      width: 122,
       render: (v) => {
         const map = {
           sale: { label: "Sale", color: "green" },
@@ -143,15 +155,18 @@ export default function TransactionsPage({
         return <Tag color={item.color}>{item.label}</Tag>;
       },
     },
-    { title: "Item", dataIndex: "item", width: 220, responsive: ["md"] },
-    { title: "Batch", dataIndex: "batchNo", width: 120, render: (v) => v || "-", responsive: ["lg"] },
-    { title: "Gross", dataIndex: "gross", width: 120, render: (v) => money(v), responsive: ["md"] },
-    { title: "Paid", dataIndex: "paidAmount", width: 120, render: (v) => money(v), responsive: ["lg"] },
-    { title: "Due", dataIndex: "due", width: 120, render: (v) => money(v), responsive: ["md"] },
-    { title: "Due Date", dataIndex: "dueDate", width: 130, render: (v) => (v ? fmtDate(v) : "-"), responsive: ["lg"] },
+    { title: "Item", dataIndex: "item", width: 156, ellipsis: true, responsive: ["md"] },
+    { title: "Batch", dataIndex: "batchNo", width: 96, render: (v) => v || "-", responsive: ["xxl"] },
+    { title: "Qty", dataIndex: "qty", width: 72, responsive: ["md"] },
+    { title: "Rate", dataIndex: "unitAmount", width: 94, render: (v) => money(v), responsive: ["md"] },
+    { title: "GST%", dataIndex: "gstRate", width: 78, render: (v) => `${Number(v || 0)}%`, responsive: ["lg"] },
+    { title: "Gross", dataIndex: "gross", width: 102, render: (v) => money(v), responsive: ["md"] },
+    { title: "Paid", dataIndex: "paidAmount", width: 96, render: (v) => money(v), responsive: ["lg"] },
+    { title: "Due", dataIndex: "due", width: 96, render: (v) => money(v), responsive: ["md"] },
+    { title: "Due Date", dataIndex: "dueDate", width: 98, render: (v) => (v ? fmtDate(v) : "-"), responsive: ["lg"] },
     {
       title: "Actions",
-      width: 124,
+      width: 84,
       render: (_, r) => (
         <RowActions
           quickActions={[
@@ -231,7 +246,8 @@ export default function TransactionsPage({
           columns={columns}
           dataSource={quickFiltered}
           pagination={{ pageSize: 8 }}
-          scroll={{ x: 1180 }}
+          tableLayout="auto"
+          scroll={{ x: "max-content" }}
           size="middle"
         />
       </Card>

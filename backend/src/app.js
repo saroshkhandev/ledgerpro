@@ -59,8 +59,34 @@ function findRoute(method, pathname) {
   return null;
 }
 
+function setCorsHeaders(req, res) {
+  const origin = req.headers.origin;
+  const allowedOrigins = new Set([
+    "capacitor://localhost",
+    "http://localhost",
+    "http://localhost:5173",
+    "http://localhost:4000",
+    "http://127.0.0.1:5173",
+    "http://127.0.0.1:4000",
+  ]);
+  if (origin && allowedOrigins.has(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+    res.setHeader("Vary", "Origin");
+  }
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, X-Session-Id");
+}
+
 const server = http.createServer(async (req, res) => {
   try {
+    setCorsHeaders(req, res);
+    if (req.method === "OPTIONS") {
+      res.writeHead(204);
+      res.end();
+      return;
+    }
+
     const url = new URL(req.url, `http://${req.headers.host}`);
     const { pathname } = url;
 

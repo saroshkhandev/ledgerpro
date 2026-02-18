@@ -48,13 +48,15 @@ export default function EntitiesPage({
   };
 
   const columns = [
-    { title: "Name", dataIndex: "name" },
-    { title: "Category", dataIndex: "category" },
-    { title: "GSTIN", dataIndex: "gstin", render: (v) => v || "-", responsive: ["md"] },
-    { title: "Opening", dataIndex: "openingBalance", render: (v) => money(v), responsive: ["lg"] },
-    { title: "Balance", dataIndex: "balance", render: (v) => money(v) },
+    { title: "Name", dataIndex: "name", width: 170, ellipsis: true },
+    { title: "Category", dataIndex: "category", width: 130, ellipsis: true, responsive: ["sm"] },
+    { title: "Phone", dataIndex: "phone", width: 124, render: (v) => v || "-", responsive: ["md"] },
+    { title: "GSTIN", dataIndex: "gstin", width: 152, render: (v) => v || "-", ellipsis: true, responsive: ["lg"] },
+    { title: "Opening", dataIndex: "openingBalance", width: 104, render: (v) => money(v), responsive: ["md"] },
+    { title: "Balance", dataIndex: "balance", width: 104, render: (v) => money(v) },
     {
       title: "Actions",
+      width: 90,
       render: (_, r) => (
         <RowActions
           quickActions={[{ key: "passbook", label: "Passbook", onClick: () => openPassbook(r) }]}
@@ -84,7 +86,15 @@ export default function EntitiesPage({
         title="Entities"
         extra={<Button type="primary" onClick={openAdd}>Add Entity</Button>}
       >
-        <Table className="page-table" rowKey="id" columns={columns} dataSource={entities} pagination={{ pageSize: 10 }} />
+        <Table
+          className="page-table"
+          rowKey="id"
+          columns={columns}
+          dataSource={entities}
+          pagination={{ pageSize: 10 }}
+          tableLayout="auto"
+          scroll={{ x: "max-content" }}
+        />
       </Card>
 
       <Drawer

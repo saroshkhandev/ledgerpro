@@ -9,15 +9,23 @@ function createSession(userId) {
   return sid;
 }
 
-function destroySessionByCookie(cookieHeader) {
-  const cookies = parseCookies(cookieHeader || "");
-  if (cookies.sid) sessions.delete(cookies.sid);
+function getSessionIdFromRequest(req) {
+  const cookies = parseCookies(req.headers.cookie || "");
+  if (cookies.sid) return cookies.sid;
+  const headerSid = req.headers["x-session-id"];
+  if (headerSid && typeof headerSid === "string") return headerSid;
+  return null;
 }
 
 function getUserIdFromRequest(req) {
-  const cookies = parseCookies(req.headers.cookie || "");
-  if (!cookies.sid) return null;
-  return sessions.get(cookies.sid) || null;
+  const sid = getSessionIdFromRequest(req);
+  if (!sid) return null;
+  return sessions.get(sid) || null;
 }
 
-module.exports = { createSession, destroySessionByCookie, getUserIdFromRequest };
+function destroySessionByRequest(req) {
+  const sid = getSessionIdFromRequest(req);
+  if (sid) sessions.delete(sid);
+}
+
+module.exports = { createSession, destroySessionByRequest, getUserIdFromRequest };

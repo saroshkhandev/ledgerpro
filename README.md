@@ -76,10 +76,11 @@ The project now includes Capacitor wrappers under:
 
 1. `cd /Users/saroshkhan/work/projectA/frontend`
 2. `npm install`
-3. Configure API URL for mobile builds:
+3. Configure API URL for mobile builds if needed:
    - copy `/Users/saroshkhan/work/projectA/frontend/.env.example` to `frontend/.env`
-   - set `VITE_API_BASE_URL` to your deployed backend API, for example:
-     - `VITE_API_BASE_URL=https://ledgerpro-39ln.onrender.com/api`
+   - default in native wrapper is `http://localhost:4000/api`
+   - for physical device testing, set `VITE_API_BASE_URL` to your machine LAN IP, for example:
+     - `VITE_API_BASE_URL=http://192.168.1.23:4000/api`
 
 ### Build and sync mobile assets
 
@@ -87,6 +88,9 @@ From repo root:
 1. `npm run mobile:build`
 
 This builds the web app and syncs it to Android/iOS wrappers.
+
+For login/API to work in simulator, run backend locally before launching app:
+1. `npm run dev:api`
 
 ### Open native projects
 
