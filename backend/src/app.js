@@ -2,6 +2,7 @@ const http = require("http");
 const fs = require("fs");
 const path = require("path");
 const { URL } = require("url");
+require("./config/env");
 
 const { PORT, FRONTEND_DIST_DIR } = require("./config/constants");
 const services = require("./services");

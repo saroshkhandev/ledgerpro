@@ -10,12 +10,16 @@
     "build:web": "npm --prefix frontend run build",
     "mobile:build": "npm --prefix frontend run mobile:build",
     "mobile:sync": "npm --prefix frontend run mobile:sync",
+    "mobile:sync:ios": "npm --prefix frontend run mobile:sync:ios",
+    "mobile:sync:android": "npm --prefix frontend run mobile:sync:android",
+    "mobile:doctor": "npm --prefix frontend run mobile:doctor",
     "mobile:android": "npm --prefix frontend run mobile:android",
     "mobile:ios": "npm --prefix frontend run mobile:ios",
     "mobile:run:android": "npm --prefix frontend run mobile:run:android",
     "mobile:run:ios": "npm --prefix frontend run mobile:run:ios"
   },
   "dependencies": {
+    "dotenv": "^17.3.1",
     "mongodb": "^6.18.0"
   }
 }

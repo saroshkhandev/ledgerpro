@@ -57,6 +57,8 @@ You can override safely using env vars:
 5. Open:
    - `http://localhost:5173`
 
+Backend now auto-loads `/Users/saroshkhan/work/projectA/.env` via `dotenv`.
+
 ## Production frontend build
 
 1. `cd /Users/saroshkhan/work/projectA`
@@ -91,6 +93,26 @@ This builds the web app and syncs it to Android/iOS wrappers.
 
 For login/API to work in simulator, run backend locally before launching app:
 1. `npm run dev:api`
+
+### Mobile developer commands
+
+From repo root:
+1. `npm run mobile:doctor` (verify Capacitor environment)
+2. `npm run mobile:sync:ios`
+3. `npm run mobile:sync:android`
+4. `npm run mobile:ios` (open Xcode workspace)
+5. `npm run mobile:android` (open Android Studio project)
+
+### Release build pointers
+
+1. Android:
+   - Open Android Studio (`npm run mobile:android`)
+   - Build > Generate Signed Bundle / APK
+   - Choose `AAB` for Play Store, `APK` for direct install/testing
+2. iOS:
+   - Open Xcode (`npm run mobile:ios`)
+   - Product > Archive
+   - Distribute via TestFlight/App Store Connect
 
 ### Open native projects
 
